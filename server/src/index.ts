@@ -5,10 +5,8 @@ dotenv.config();
 import cors from 'cors';
 import { corsOptions } from "./config/corsOptions";
 import cookieParser from 'cookie-parser';
-import { credentials } from "./middleware/credentials";
-import { registerRouter, authRouter } from "./routes";
-
-const PORT = process.env.PORT;
+import { credentials, verifyJWT } from "./middleware";
+import { registerRouter, authRouter, refreshRouter } from "./routes";
 
 const app = express();
 
@@ -23,11 +21,16 @@ app.use('/', express.static(path.join(__dirname, '/public')));
 
 app.use('/register', registerRouter);
 app.use('/auth', authRouter);
+app.use('/refresh', refreshRouter);
 
-// app.get('/', (req, res) => {
-//   res.send("Asdads");
-// })
+// verify access-token before access api
+app.use(verifyJWT);
 
+app.get('/test', (req, res) => {
+  res.send("Asdads");
+})
+
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
     console.log(`now listening on port ${PORT}`);
   });
