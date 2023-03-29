@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import bcrypt from 'bcrypt';
 import { db } from "../util/db.server";
-import { Secret, JwtPayload, sign, SignOptions } from 'jsonwebtoken';
+import { Secret, sign, SignOptions } from 'jsonwebtoken';
 import { TypedRequestBody, UserInfoJwtPayload } from "src/interfaces";
 
 // access token
@@ -44,7 +44,7 @@ export const handleLogin = async (req: TypedRequestBody<{ email: string, passwor
             },
         });
 
-        res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: 'none', secure: true, maxAge: 24 * 60 * 60 * 1000 });
+        res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: 'lax', secure: true, maxAge: 24 * 60 * 60 * 1000 });
         res.json({ accessToken });
     }
     else {
